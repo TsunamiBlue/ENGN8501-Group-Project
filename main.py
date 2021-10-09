@@ -7,8 +7,6 @@ from torch.utils.data import dataloader,DataLoader
 from tqdm import tqdm
 
 
-
-
 def main():
 
     if torch.cuda.is_available():
