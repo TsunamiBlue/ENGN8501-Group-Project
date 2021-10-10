@@ -2,7 +2,6 @@ import os
 import numpy as np
 import torch
 import torchvision.transforms as T
-import models
 from torch.utils.data import dataloader,DataLoader
 from tqdm import tqdm
 
