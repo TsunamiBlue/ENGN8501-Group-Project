@@ -1,4 +1,8 @@
 # *_*coding:utf-8 *_*
+"""
+Normalization pose skeletons from source to target. Mathmatical appraoch.
+Should perform after step A & B.
+"""
 from tqdm import tqdm
 import os
 import numpy as np

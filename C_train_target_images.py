@@ -1,3 +1,7 @@
+"""
+Deep learning, GAN based method to generate target frames (combined to get vids at the end) from the target pose skeletons.
+Should perform after step A & B.
+"""
 import os
 import numpy as np
 import torch

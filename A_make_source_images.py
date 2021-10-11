@@ -1,3 +1,6 @@
+"""
+Pre-processing source images, use OpenPose to find their pose skeletons
+"""
 '''Download and extract video'''
 import cv2
 from pathlib import Path

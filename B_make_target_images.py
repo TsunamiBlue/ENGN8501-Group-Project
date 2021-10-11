@@ -1,3 +1,6 @@
+"""
+Pre-processing target images, use OpenPose to find their pose skeletons
+"""
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt

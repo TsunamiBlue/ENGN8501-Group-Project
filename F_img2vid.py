@@ -1,3 +1,6 @@
+"""
+evaluate by concatenating output images into gifs.
+"""
 import cv2
 import os
 from src.utils.vutils import VideoDumper,VideoGenerator
