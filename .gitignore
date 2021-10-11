@@ -115,4 +115,7 @@ dmypy.json
 src/pix2pixHD/models/vgg19-dcbb9e9d.pth.crdownload
 src/PoseEstimation/network/weight/pose_model.pth
 data
+checkpoints
 !/src/pix2pixHD/data
+face_enhancer/prepare
+face_enhancer/vgg16_pretrained_features.pth
