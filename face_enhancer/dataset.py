@@ -33,6 +33,24 @@ class ImageFolderDataset(Dataset):
         return len(self.images)
 
 
+class RefineDataset(Dataset):
+    def __init__(self, root, is_test=False):
+        self.is_test = is_test
+        self.root = root
+        self.images = os.listdir(root)
+        tmp = imread(os.path.join(self.root, self.images[0]))
+        self.size = tmp.shape[:-1]
+
+    def __getitem__(self, item):
+        name = self.images[item]
+        real_img = None
+        fake_img = imread(os.path.join(self.root, name))
+        return real_img, fake_img
+
+    def __len__(self):
+        return len(self.images)
+
+
 class FaceCropDataset(Dataset): #TODO FaceCropDataset
     def __init__(self, image_dataset, pose_file, transform, crop_size=96):
         self.image_dataset = image_dataset

@@ -41,11 +41,11 @@ def torch2numpy(tensor):
     
 if __name__ == '__main__':
     torch.backends.cudnn.benchmark = True
-    dataset_dir = '../data/face'   # save test_sync in this folder
+    # dataset_dir = '../data/face'   # save test_sync in this folder
     pose_name = '../data/source/pose_source_norm.npy' # coordinate save every heads
     ckpt_dir = '../checkpoints/face'
-    result_dir = '../results'
-    save_dir = dataset_dir+'/full_fake/'
+    result_dir = '../results/target/test_latest/images/synthesized_image'
+    save_dir = '../results/target/test_latest/images/full_fake/'
 
     if not os.path.exists(save_dir):
         print('generate %s'%save_dir)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         print(save_dir, 'is existing...')
 
 
-    image_folder = dataset.ImageFolderDataset(dataset_dir, cache=os.path.join(dataset_dir, 'local.db'), is_test=True)
+    image_folder = dataset.RefineDataset(result_dir, is_test=True)
     face_dataset = dataset.FaceCropDataset(image_folder, pose_name, image_transforms, crop_size=48)
     length = len(face_dataset)
     print('Picture number',length)
@@ -64,7 +64,9 @@ if __name__ == '__main__':
     for i in tqdm(range(length)):
         _, fake_head, top, bottom, left, right, real_full, fake_full \
             = face_dataset.get_full_sample(i)
-
+        # a = torch2numpy(_)
+        # cv2.imshow("1", a)
+        # cv2.waitKey(0)
         with torch.no_grad():
             fake_head.unsqueeze_(0)
             fake_head = fake_head.to(device)
