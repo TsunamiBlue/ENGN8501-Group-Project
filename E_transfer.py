@@ -8,6 +8,12 @@ from collections import OrderedDict
 from pathlib import Path
 from tqdm import tqdm
 import sys
+import warnings
+
+warnings.filterwarnings('ignore')
+mainpath = os.getcwd()
+data_dir = Path(mainpath+'/data/')
+sys.path.append(str(data_dir))
 pix2pixhd_dir = Path('./src/pix2pixHD/')
 sys.path.append(str(pix2pixhd_dir))
 
@@ -25,18 +31,19 @@ data_loader = CreateDataLoader(opt)
 dataset = data_loader.load_data()
 visualizer = Visualizer(opt)
 
-web_dir = os.path.join(opt.results_dir, opt.name, '%s_%s' % (opt.phase, opt.which_epoch))
-webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.which_epoch))
+
+pth = os.path.join(opt.results_dir, opt.name, '%s_%s' % (opt.phase, opt.which_epoch))
 
 model = create_model(opt)
 
 for data in tqdm(dataset):
     minibatch = 1
-    generated = model.inference(data['label'], data['inst'])
+    generated,_ = model.inference(data['label'])
 
     visuals = OrderedDict([('input_label', util.tensor2label(data['label'][0], opt.label_nc)),
                            ('synthesized_image', util.tensor2im(generated.data[0]))])
     img_path = data['path']
-    visualizer.save_images(webpage, visuals, img_path)
-webpage.save()
+    # print(img_path)
+    visualizer.save_images(pth, visuals, img_path)
+
 torch.cuda.empty_cache()

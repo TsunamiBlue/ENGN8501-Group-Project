@@ -1,10 +1,10 @@
 import torch.utils.data
-from data.base_data_loader import BaseDataLoader
+from src.pix2pixHD.data.base_data_loader import BaseDataLoader
 
 
 def CreateDataset(opt):
     dataset = None
-    from data.aligned_dataset import AlignedDataset
+    from src.pix2pixHD.data.aligned_dataset import AlignedDataset
     dataset = AlignedDataset()
 
     print("dataset [%s] was created" % (dataset.name()))

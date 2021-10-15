@@ -7,6 +7,7 @@ from collections import OrderedDict
 from torch.autograd import Variable
 from pathlib import Path
 import warnings
+import torch.nn as nn
 
 warnings.filterwarnings('ignore')
 mainpath = os.getcwd()
@@ -40,13 +41,42 @@ def main():
 
     model = create_model(opt)
     model = model.cuda()
+
     visualizer = Visualizer(opt)
 
     for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
         if epoch != start_epoch:
             epoch_iter = epoch_iter % dataset_size
+        # print(epoch_iter)
         for i, data in enumerate(dataset, start=epoch_iter):
+            # print(f"BATCH: {i}")
+            # handle 1st frame
+            # if not i:
+            #     # print(data['image'].size())
+            #     prev_img = torch.zeros_like(data['image'])
+            #     prev_label = torch.zeros_like(data['label'])
+            #     prev_inst = torch.zeros_like(data['inst'])
+            #     prev_feat = torch.zeros_like(data['feat'])
+            # else:
+            #     prev_img = dataset.dataset[i-1]['image']
+            #     prev_label = torch.tensor(dataset.dataset[i-1]['label'])
+            #     prev_inst = torch.tensor(dataset.dataset[i-1]['inst'])
+            #     prev_feat = torch.tensor(dataset.dataset[i-1]['feat'])
+
+
+            # smoothing_label = torch.stack((prev_label,data['label']),dim=-1)
+            # smoothing_inst = torch.stack((prev_inst,data['inst']),dim=-1)
+            # smoothing_img = torch.stack((prev_img,data['image']),dim=-1)
+            # smoothing_feat = torch.stack((prev_feat,data['feat']),dim=-1)
+            # #
+            # print(prev_img.size())
+            # print(smoothing_img.size())
+            # print(prev_label.size())
+            # print(smoothing_label.size())
+
+
+
             iter_start_time = time.time()
             total_steps += opt.batchSize
             epoch_iter += opt.batchSize
@@ -54,17 +84,31 @@ def main():
             # whether to collect output images
             save_fake = total_steps % opt.display_freq == display_delta
 
-            ############## Forward Pass ######################
-            losses, generated = model(Variable(data['label']), Variable(data['inst']),
-                                      Variable(data['image']), Variable(data['feat']), infer=save_fake)
+            ############## Forward Pass Current Frame ######################
+            # losses, generated = model(Variable(data['label']), Variable(data['inst']),
+            #                           Variable(data['image']), Variable(data['feat']), infer=save_fake)
+            losses, generated,generated_prev = model(Variable(data['label']), Variable(data['label_pre']),
+                                      Variable(data['image']),Variable(data['image_pre']), infer=save_fake)
+
+
 
             # sum per device losses
             losses = [torch.mean(x) if not isinstance(x, int) else x for x in losses]
+            # print(model)
             loss_dict = dict(zip(model.loss_names, losses))
 
             # calculate final loss scalar
             loss_D = (loss_dict['D_fake'] + loss_dict['D_real']) * 0.5
             loss_G = loss_dict['G_GAN'] + loss_dict.get('G_GAN_Feat', 0) + loss_dict.get('G_VGG', 0)
+
+            ############### Temporal Smoothing Loss ####################
+            # print(real_prob[0][0].size())
+
+            # print( torch.Tensor( (loss_dict['D_fake'].item()+loss_dict['D_real'].item()) * 0.5) )
+            # loss_ts = torch.log( torch.tensor( (loss_dict['D_fake'].item()+loss_dict['D_real'].item()) * 0.5) ) \
+            #           + torch.log(torch.tensor(1-(loss_dict_prev['D_fake_prev'].item()+loss_dict_prev['D_real_prev'].item()*0.5)))
+            # loss_G += loss_ts
+
 
             ############### Backward Pass ####################
             # update generator weights

@@ -2,7 +2,7 @@
 ### Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 import argparse
 import os
-from util import util
+from util import utility
 import torch
 
 class BaseOptions():
@@ -13,7 +13,7 @@ class BaseOptions():
     def initialize(self):    
         # experiment specifics
         self.parser.add_argument('--name', type=str, default='label2city', help='name of the experiment. It decides where to store samples and models')        
-        self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        self.parser.add_argument('--gpu_ids', type=str, default='-1', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         self.parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.parser.add_argument('--model', type=str, default='pix2pixHD', help='which model to use')
         self.parser.add_argument('--norm', type=str, default='instance', help='instance normalization or batch normalization')        
@@ -30,7 +30,7 @@ class BaseOptions():
         self.parser.add_argument('--output_nc', type=int, default=3, help='# of output image channels')
 
         # for setting inputs
-        self.parser.add_argument('--dataroot', type=str, default='./datasets/cityscapes/') 
+        self.parser.add_argument('--dataroot', type=str, default='./data/datasets/')
         self.parser.add_argument('--resize_or_crop', type=str, default='scale_width', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
         self.parser.add_argument('--serial_batches', action='store_true', help='if true, takes images in order to make batches, otherwise takes them randomly')        
         self.parser.add_argument('--no_flip', action='store_true', help='if specified, do not flip the images for data argumentation') 
@@ -58,7 +58,9 @@ class BaseOptions():
         self.parser.add_argument('--load_features', action='store_true', help='if specified, load precomputed feature maps')
         self.parser.add_argument('--n_downsample_E', type=int, default=4, help='# of downsampling layers in encoder') 
         self.parser.add_argument('--nef', type=int, default=16, help='# of encoder filters in the first conv layer')        
-        self.parser.add_argument('--n_clusters', type=int, default=10, help='number of clusters for features')        
+        self.parser.add_argument('--n_clusters', type=int, default=10, help='number of clusters for features')
+        self.parser.add_argument('--background', action='store_true',help='if specified, add background')
+        self.parser.add_argument('--bg_path', type=str, default='', help='background image path')
 
         self.initialized = True
 
@@ -88,7 +90,7 @@ class BaseOptions():
 
         # save to the disk        
         expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
-        util.mkdirs(expr_dir)
+        utility.mkdirs(expr_dir)
         if save and not self.opt.continue_train:
             file_name = os.path.join(expr_dir, 'opt.txt')
             with open(file_name, 'wt') as opt_file:

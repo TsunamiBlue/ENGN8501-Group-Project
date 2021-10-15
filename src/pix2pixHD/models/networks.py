@@ -103,9 +103,8 @@ class GANLoss(nn.Module):
         if isinstance(input[0], list):
             loss = 0
             for input_i in input:
-                pred = input_i[-1].cuda()
-                target_tensor = self.get_target_tensor(pred, target_is_real).cuda()
-                ##把加cuda()##
+                pred = input_i[-1]
+                target_tensor = self.get_target_tensor(pred, target_is_real)
                 loss += self.loss(pred, target_tensor)
             return loss
         else:            

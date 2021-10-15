@@ -1,4 +1,5 @@
 aspect_ratio=1.0
+background = False
 batchSize=1
 checkpoints_dir='./checkpoints/'
 cluster_path='features_clustered_010.npy'

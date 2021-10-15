@@ -6,7 +6,7 @@ from collections import OrderedDict
 import numpy as np
 import os
 from PIL import Image
-import util.util as util
+import util.utility as util
 from .base_model import BaseModel
 from . import networks
 

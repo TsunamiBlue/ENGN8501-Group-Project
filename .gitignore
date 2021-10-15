@@ -122,3 +122,7 @@ checkpoints
 !/src/pix2pixHD/data
 face_enhancer/prepare
 face_enhancer/vgg16_pretrained_features.pth
+
+
+# backup
+backup/

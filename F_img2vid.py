@@ -6,16 +6,16 @@ import os
 from src.utils.vutils import VideoDumper,VideoGenerator
 
 video_name = 'test_1'
-ROOT = './results/target/test_latest/images'
+ROOT = './results/target/test_latest/synthesized_image'
 # OUT_PATH = ROOT+'.mp4'
 OUT_PATH = './result.mp4'
 out = VideoDumper(OUT_PATH, monit=False,fps=25)
 for _,_,files in os.walk(ROOT):
     for f in files[::-1]:
         try:
-            # a = int(f[6:-4])
-            a = f[6:11]
-            assert a=="synth"
+            a = int(f[0:5])
+            # a = f[6:11]
+            # assert a=="synth"
         except:
             files.remove(f)
     files.sort(key=lambda x:int(x[:5]))

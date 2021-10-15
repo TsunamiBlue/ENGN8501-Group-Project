@@ -1,3 +1,4 @@
+background = False
 batchSize=1
 beta1=0.5
 checkpoints_dir='./checkpoints/'

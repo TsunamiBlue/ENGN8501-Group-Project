@@ -4,6 +4,7 @@ import numpy as np
 import os
 import ntpath
 import time
+import sys
 from . import util
 from . import html
 import scipy.misc
@@ -113,23 +114,22 @@ class Visualizer():
             log_file.write('%s\n' % message)
 
     # save image to the disk
-    def save_images(self, webpage, visuals, image_path):
-        image_dir = webpage.get_image_dir()
+    def save_images(self, pth, visuals, image_path):
+        image_dir = pth
         short_path = ntpath.basename(image_path[0])
         name = os.path.splitext(short_path)[0]
 
-        webpage.add_header(name)
-        ims = []
-        txts = []
-        links = []
+
 
         for label, image_numpy in visuals.items():
             # image_name = '%s_%s.jpg' % (name, label)
-            image_name = f'{label}/{name}.jpg'
-            save_path = os.path.join(image_dir, image_name)
+            # image_name = f'{label}/{name}.jpg'
+            save_path = os.path.join(image_dir, label)
+
+            if not os.path.exists(save_path):
+                os.mkdir(save_path)
+
+            save_path = os.path.join(save_path, f"{name}.jpg")
+            print(save_path)
             util.save_image(image_numpy, save_path)
 
-            ims.append(image_name)
-            txts.append(label)
-            links.append(image_name)
-        webpage.add_images(ims, txts, links, width=self.win_size)
